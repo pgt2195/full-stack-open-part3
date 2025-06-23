@@ -1,0 +1,44 @@
+GET http://localhost:3001/api/persons
+
+###
+GET http://localhost:3001/info
+
+###
+GET http://localhost:3001/api/persons/4
+
+###
+GET http://localhost:3001/api/persons/30
+
+###
+DELETE http://localhost:3001/api/persons/3
+
+###
+POST http://localhost:3001/api/persons
+content-type: application/json
+
+{
+    "name": "Dominique Prouot",
+    "number": "34-56-9875634"
+}
+
+###
+POST http://localhost:3001/api/persons
+content-type: application/json
+
+###
+POST http://localhost:3001/api/persons
+content-type: application/json
+
+{
+    "name": "Dominique Prout",
+    "birthday": "1992-07-28"
+}
+
+###
+POST http://localhost:3001/api/persons
+content-type: application/json
+
+{
+    "number": "34-56-9875634",
+    "birthday": "1992-07-28"
+}
