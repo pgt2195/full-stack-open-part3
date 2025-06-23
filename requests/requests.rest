@@ -17,7 +17,7 @@ POST http://localhost:3001/api/persons
 content-type: application/json
 
 {
-    "name": "Dominique Prouot",
+    "name": "Dominique Bidule",
     "number": "34-56-9875634"
 }
 
