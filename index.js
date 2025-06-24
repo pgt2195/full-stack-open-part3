@@ -1,11 +1,12 @@
 const express = require('express')
 const app = express()
 var morgan = require('morgan')
+const cors = require('cors')
 
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :postBody'))
-
 morgan.token('postBody', (req, res) => JSON.stringify(req.body))
+app.use(cors())
 
 let persons = [
     { 
@@ -51,10 +52,10 @@ app.get('/api/persons/:id', (request, response) => {
 
 app.delete('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id)
-  console.log(`Id: ${id}`)
+  // console.log(`Id: ${id}`)
   persons = persons.filter(person => person.id !== id)
   console.log(persons)
-  response.status(204).end()
+  response.status(200).send({"id": id})
 })
 
 const generateId = () => Math.round(Math.random() * 10000000)
