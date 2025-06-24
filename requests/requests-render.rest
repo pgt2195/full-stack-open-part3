@@ -1,0 +1,44 @@
+GET http://full-stack-open-part3-cvrc.onrender.com/api/persons
+
+###
+GET http://full-stack-open-part3-cvrc.onrender.com/info
+
+###
+GET http://full-stack-open-part3-cvrc.onrender.com/api/persons/4
+
+###
+GET http://full-stack-open-part3-cvrc.onrender.com/api/persons/30
+
+###
+DELETE http://full-stack-open-part3-cvrc.onrender.com/api/persons/3
+
+###
+POST http://full-stack-open-part3-cvrc.onrender.com/api/persons
+content-type: application/json
+
+{
+    "name": "Dominique Bidule",
+    "number": "34-56-9875634"
+}
+
+###
+POST http://full-stack-open-part3-cvrc.onrender.com/api/persons
+content-type: application/json
+
+###
+POST http://full-stack-open-part3-cvrc.onrender.com/api/persons
+content-type: application/json
+
+{
+    "name": "Dominique Prout",
+    "birthday": "1992-07-28"
+}
+
+###
+POST http://full-stack-open-part3-cvrc.onrender.com/api/persons
+content-type: application/json
+
+{
+    "number": "34-56-9875634",
+    "birthday": "1992-07-28"
+}
