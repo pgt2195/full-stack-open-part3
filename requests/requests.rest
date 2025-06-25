@@ -4,7 +4,7 @@ GET http://localhost:3001/api/persons
 GET http://localhost:3001/info
 
 ###
-GET http://localhost:3001/api/persons/4
+GET http://localhost:3001/api/persons/685bfbbfa81b2b2efc82709a
 
 ###
 GET http://localhost:3001/api/persons/30
@@ -17,7 +17,7 @@ POST http://localhost:3001/api/persons
 content-type: application/json
 
 {
-    "name": "Dominique Bidule",
+    "name": "Maurice Prépuce",
     "number": "34-56-9875634"
 }
 
