@@ -13,69 +13,90 @@ let persons = []
 
 //#region ROUTES
 
-app.get('/', (request, response) => {
-  response.send('<h1>Part3 phonebook</h1>')
-})
-
-app.get('/api/persons', (request, response) => {
-  Person.find({}).then(persons => {
-    response.json(persons)
-  })
-})
-
-app.get('/info', (request, response) => {
-  const date = new Date()
-  const length = persons.length
-  response.send(
-    `<p>Phonebook has info for ${length} people.</p>
-    <p>${date}</p>`
-  )
-})
-
-app.get('/api/persons/:id', (request, response) => {
-  Person.findById(request.params.id).then(person => {
-    response.json(person)
-  })
-})
-
-app.post('/api/persons', (request, response) => {
-  const body = request.body
-
-  if (!body.name || !body.number) {
-    return response.status(400).json({
-      error: 'name and number are required'
+  //#region GET ROUTES —— TODO : error management sur les deux derniers get
+    app.get('/', (request, response) => {
+      response.send('<h1>Part3 phonebook</h1>')
     })
-  } /* else if (persons.some(person => person.name === body.name)) {
-    return response.status(400).json({
-      error: 'name already in database'
+
+    app.get('/api/persons', (request, response, next) => {
+      Person.find({}).then(persons => {
+        response.json(persons)
+      }).catch(error => next(error))
     })
-  } */
 
-    // TODO : la gestion des erreurs sur la fonction de post plus haut
-
-  const person = new Person({
-    name: body.name,
-    number: body.number,
-  })
-
-  person.save().then(savedPerson => {
-    response.json(savedPerson)
-  })
-})
-
-app.delete('/api/persons/:id', (request, response) => {
-  Person.findByIdAndDelete(request.params.id)
-    .then(result => {
-      response.status(200).send({id: request.params.id})
+    app.get('/info', (request, response, next) => {
+      const date = new Date()
+      Person.countDocuments({}).then(count => {
+        response.send(
+        `<p>Phonebook has info for ${count} people.</p>
+         <p>${date}</p>`
+        )
+      }).catch(error => next(error))
     })
-    .catch(error => next(error))
-})
+
+    app.get('/api/persons/:id', (request, response, next) => {
+      Person.findById(request.params.id)
+      .then(person => {
+        response.json(person)
+      })
+      .catch(error => next(error))
+    })
+  //#endregion
+
+  //#region OTHER ROUTES
+    app.post('/api/persons', (request, response, next) => {
+      const body = request.body
+
+      if (!body.name || !body.number) {
+        return response.status(400).json({
+          error: 'name and number are required'
+        })
+      }
+
+      const person = new Person({
+        name: body.name,
+        number: body.number,
+      })
+
+      person.save().then(savedPerson => {
+        response.json(savedPerson)
+      })
+    })
+
+    // update an entry
+    app.put('/api/persons/:id', (request, response, next) => { 
+      Person.findById(request.params.id)
+        .then(person => {
+          if (!person) {
+            console.log("The person you're trying to update does not exists on the server")
+            return response.status(404).end()
+          }
+
+          person.number = request.body.number
+
+          return person.save()
+            .then(updatedNote => {
+              response.json(updatedNote)
+            })
+        })
+        .catch(error => next(error))
+    })
+
+    app.delete('/api/persons/:id', (request, response, next) => {
+      Person.findByIdAndDelete(request.params.id)
+        .then(result => {
+          response.status(200).send({id: request.params.id})
+        })
+        .catch(error => next(error))
+    })
+  //#endregion
 
 //#endregion
 
 //#region ERROR HANDLING
 
 const errorHandler = (error, request, response, next) => {
+  console.log('errorHandler activated!')
   console.error(error.message)
 
   if (error.name === 'CastError') {
@@ -86,6 +107,7 @@ const errorHandler = (error, request, response, next) => {
 }
 
 const unknownEndpoint = (request, response) => {
+  console.log('404 unknownEndpoint activated! Nothing to see here!')
   response.status(404).send({ error: 'unknown endpoint' })
 }
 

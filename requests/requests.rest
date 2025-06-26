@@ -1,16 +1,28 @@
 GET http://localhost:3001/api/persons
 
 ###
+GET http://localhost:3001/wrongroute
+
+###
 GET http://localhost:3001/info
 
 ###
 GET http://localhost:3001/api/persons/685bfbbfa81b2b2efc82709a
 
 ###
+GET http://localhost:3001/api/persons/685d954fcca262296fbe6d67
+
+###
 GET http://localhost:3001/api/persons/30
 
 ###
-DELETE http://localhost:3001/api/persons/685d4128f3e203f8567ac50e
+DELETE http://localhost:3001/api/persons/685d954fcca262296fbe6d67
+
+###
+DELETE http://localhost:3001/api/persons/wrongid
+
+###
+PUT http://localhost:3001/api/persons/685d954fcca262296fbe6d67
 
 ###
 POST http://localhost:3001/api/persons
