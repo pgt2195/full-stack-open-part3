@@ -11,6 +11,8 @@ app.use(express.static('dist'))
 
 let persons = []
 
+//#region ROUTES
+
 app.get('/', (request, response) => {
   response.send('<h1>Part3 phonebook</h1>')
 })
@@ -36,8 +38,6 @@ app.get('/api/persons/:id', (request, response) => {
   })
 })
 
-const generateId = () => Math.round(Math.random() * 10000000)
-
 app.post('/api/persons', (request, response) => {
   const body = request.body
 
@@ -62,12 +62,14 @@ app.post('/api/persons', (request, response) => {
 })
 
 app.delete('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
-  // console.log(`Id: ${id}`)
-  persons = persons.filter(person => person.id !== id)
-  console.log(persons)
-  response.status(200).send({"id": id})
+  Person.findByIdAndDelete(request.params.id)
+    .then(result => {
+      response.status(204).end()
+    })
+    // TODO : ajouter le catch
 })
+
+//#endregion
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
