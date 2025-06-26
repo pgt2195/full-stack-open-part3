@@ -51,6 +51,8 @@ app.post('/api/persons', (request, response) => {
     })
   } */
 
+    // TODO : la gestion des erreurs sur la fonction de post plus haut
+
   const person = new Person({
     name: body.name,
     number: body.number,
@@ -66,8 +68,29 @@ app.delete('/api/persons/:id', (request, response) => {
     .then(result => {
       response.status(204).end()
     })
-    // TODO : ajouter le catch
+    .catch(error => next(error))
 })
+
+//#endregion
+
+//#region ERROR HANDLING
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  }
+
+  next(error)
+}
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
+app.use(errorHandler)
 
 //#endregion
 
