@@ -81,7 +81,6 @@ app.put('/api/persons/:id', (request, response, next) => {
         })
     })
     .catch((error) => {
-      console.log('clue!')
       return next(error)
     })
 })
@@ -106,7 +105,6 @@ const errorHandler = (error, request, response, next) => {
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
   } else if (error.name === 'ValidationError') {
-    console.log("clue2")
     return response.status(400).json({ error: error.message })
   }
 
