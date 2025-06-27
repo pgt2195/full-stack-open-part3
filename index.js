@@ -11,7 +11,7 @@ app.use(express.static('dist'))
 
 //#region ROUTES
 
-//#region GET ROUTES —— TODO : error management sur les deux derniers get
+//#region GET ROUTES
 app.get('/', (request, response) => {
   response.send('<h1>Part3 phonebook</h1>')
 })
