@@ -6,10 +6,8 @@ var morgan = require('morgan')
 
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :postBody'))
-morgan.token('postBody', (req, res) => JSON.stringify(req.body))
+morgan.token('postBody', (req, _res) => JSON.stringify(req.body))
 app.use(express.static('dist'))
-
-let persons = []
 
 //#region ROUTES
 
@@ -69,7 +67,7 @@ app.put('/api/persons/:id', (request, response, next) => {
   Person.findById(request.params.id)
     .then(person => {
       if (!person) {
-        console.log("The person you're trying to update does not exists on the server")
+        console.log('The person you\'re trying to update does not exists on the server')
         return response.status(404).end()
       }
 
@@ -87,7 +85,7 @@ app.put('/api/persons/:id', (request, response, next) => {
 
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
-    .then(result => {
+    .then(() => {
       response.status(200).send({ id: request.params.id })
     })
     .catch(error => next(error))
