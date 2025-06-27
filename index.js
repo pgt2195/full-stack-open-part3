@@ -13,84 +13,87 @@ let persons = []
 
 //#region ROUTES
 
-  //#region GET ROUTES —— TODO : error management sur les deux derniers get
-    app.get('/', (request, response) => {
-      response.send('<h1>Part3 phonebook</h1>')
-    })
+//#region GET ROUTES —— TODO : error management sur les deux derniers get
+app.get('/', (request, response) => {
+  response.send('<h1>Part3 phonebook</h1>')
+})
 
-    app.get('/api/persons', (request, response, next) => {
-      Person.find({}).then(persons => {
-        response.json(persons)
-      }).catch(error => next(error))
-    })
+app.get('/api/persons', (request, response, next) => {
+  Person.find({}).then(persons => {
+    response.json(persons)
+  }).catch(error => next(error))
+})
 
-    app.get('/info', (request, response, next) => {
-      const date = new Date()
-      Person.countDocuments({}).then(count => {
-        response.send(
-        `<p>Phonebook has info for ${count} people.</p>
+app.get('/info', (request, response, next) => {
+  const date = new Date()
+  Person.countDocuments({}).then(count => {
+    response.send(
+      `<p>Phonebook has info for ${count} people.</p>
          <p>${date}</p>`
-        )
-      }).catch(error => next(error))
+    )
+  }).catch(error => next(error))
+})
+
+app.get('/api/persons/:id', (request, response, next) => {
+  Person.findById(request.params.id)
+    .then(person => {
+      response.json(person)
     })
+    .catch(error => next(error))
+})
+//#endregion
 
-    app.get('/api/persons/:id', (request, response, next) => {
-      Person.findById(request.params.id)
-      .then(person => {
-        response.json(person)
-      })
-      .catch(error => next(error))
+//#region OTHER ROUTES
+app.post('/api/persons', (request, response, next) => {
+  const body = request.body
+
+  if (!body.name || !body.number) {
+    return response.status(400).json({
+      error: 'name and number are required'
     })
-  //#endregion
+  }
 
-  //#region OTHER ROUTES
-    app.post('/api/persons', (request, response, next) => {
-      const body = request.body
+  const person = new Person({
+    name: body.name,
+    number: body.number,
+  })
 
-      if (!body.name || !body.number) {
-        return response.status(400).json({
-          error: 'name and number are required'
-        })
+  person.save().then(savedPerson => {
+    response.json(savedPerson)
+  })
+    .catch(error => next(error))
+})
+
+// update an entry
+app.put('/api/persons/:id', (request, response, next) => {
+  Person.findById(request.params.id)
+    .then(person => {
+      if (!person) {
+        console.log("The person you're trying to update does not exists on the server")
+        return response.status(404).end()
       }
 
-      const person = new Person({
-        name: body.name,
-        number: body.number,
-      })
+      person.number = request.body.number
 
-      person.save().then(savedPerson => {
-        response.json(savedPerson)
-      })
-      .catch(error => next(error))
-    })
-
-    // update an entry
-    app.put('/api/persons/:id', (request, response, next) => { 
-      Person.findById(request.params.id)
-        .then(person => {
-          if (!person) {
-            console.log("The person you're trying to update does not exists on the server")
-            return response.status(404).end()
-          }
-
-          person.number = request.body.number
-
-          return person.save()
-            .then(updatedNote => {
-              response.json(updatedNote)
-            })
+      return person.save()
+        .then(updatedNote => {
+          response.json(updatedNote)
         })
-        .catch(error => next(error))
     })
+    .catch((error) => {
+      console.log('clue!')
+      return next(error)
+    })
+})
 
-    app.delete('/api/persons/:id', (request, response, next) => {
-      Person.findByIdAndDelete(request.params.id)
-        .then(result => {
-          response.status(200).send({id: request.params.id})
-        })
-        .catch(error => next(error))
+app.delete('/api/persons/:id', (request, response, next) => {
+  Person.findByIdAndDelete(request.params.id)
+    .then(result => {
+      response.status(200).send({ id: request.params.id })
     })
-  //#endregion
+    .catch(error => next(error))
+})
+//#endregion
 
 //#endregion
 
@@ -103,7 +106,7 @@ const errorHandler = (error, request, response, next) => {
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
   } else if (error.name === 'ValidationError') {
-    console.log("it worked")
+    console.log("clue2")
     return response.status(400).json({ error: error.message })
   }
 
